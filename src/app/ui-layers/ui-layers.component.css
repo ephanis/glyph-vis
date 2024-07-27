@@ -1,0 +1,24 @@
+.pane{
+     background-color: rgb(242, 242, 242);
+     padding: 3px 20px 20px 20px;
+     border-radius: 10px;
+ }
+
+
+:host ::ng-deep .line-icon { 
+    background-image: url("../../assets/icons/line.svg");
+    width: 20px;
+    height: 20px; 
+}
+
+:host ::ng-deep .rect-icon { 
+    background-image: url("../../assets/icons/square.svg");
+    width: 20px;
+    height: 20px; 
+}
+
+:host ::ng-deep .circle-icon { 
+    background-image: url("../../assets/icons/circle.svg");
+    width: 20px;
+    height: 20px; 
+}

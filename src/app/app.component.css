@@ -1,0 +1,20 @@
+
+.layers {
+    width: 320px; 
+    margin-left: 72px;
+    margin-top: 10px;
+    position: fixed;
+}
+
+.canvas {
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%; 
+    position: fixed;
+}
+
+.drawing-tools {
+    margin-top: 10px;
+    position: fixed;
+}

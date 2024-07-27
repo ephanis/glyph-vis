@@ -1,0 +1,87 @@
+.p-buttonset {
+    display: grid; 
+    grid-gap: 6px;
+    background-color: rgb(242, 242, 242);
+    padding: 8px;
+    border-radius: 10px;
+}
+
+p-toggleButton {
+    background-color: rgb(242, 242, 242);
+}
+
+/* Check https://angularicons.com */
+
+:host ::ng-deep .pointer-icon { 
+    background-image: url("../../assets/icons/pointer-1.svg");
+    width: 25px;
+    height: 25px; 
+}
+
+:host ::ng-deep .pointer-icon-pressed { 
+    background-color: hwb(210 99% 0%);
+    -webkit-mask-image: url("../../assets/icons/pointer-1.svg");
+    mask-image: url("../../assets/icons/pointer-1.svg");
+    width: 25px;
+    height: 25px; 
+}
+
+:host ::ng-deep .line-icon { 
+    background-image: url("../../assets/icons/line.svg");
+    width: 25px;
+    height: 25px;
+}
+
+:host ::ng-deep .line-icon-pressed { 
+    background-color: hwb(210 99% 0%);
+    -webkit-mask-image: url("../../assets/icons/line.svg");
+    mask-image: url("../../assets/icons/line.svg");
+    width: 25px;
+    height: 25px; 
+}
+
+
+:host ::ng-deep .rect-icon { 
+    background-image: url("../../assets/icons/square.svg");
+    width: 25px;
+    height: 25px; 
+}
+
+:host ::ng-deep .rect-icon-pressed { 
+    background-color: hwb(210 99% 0%);
+    -webkit-mask-image: url("../../assets/icons/square.svg");
+    mask-image: url("../../assets/icons/square.svg");
+    width: 25px;
+    height: 25px; 
+}
+
+
+:host ::ng-deep .circle-icon { 
+    background-image: url("../../assets/icons/circle.svg");
+    width: 25px;
+    height: 25px; 
+}
+
+:host ::ng-deep .circle-icon-pressed { 
+    background-color: hwb(210 99% 0%);
+    -webkit-mask-image: url("../../assets/icons/circle.svg");
+    mask-image: url("../../assets/icons/circle.svg");
+    width: 25px;
+    height: 25px; 
+}
+
+
+:host ::ng-deep .draw-icon { 
+    background-image: url("../../assets/icons/pen-tool-1.svg");
+    width: 25px;
+    height: 25px; 
+}
+
+:host ::ng-deep .draw-icon-pressed { 
+    background-color: hwb(210 99% 0%);
+    -webkit-mask-image: url("../../assets/icons/pen-tool-1.svg");
+    mask-image: url("../../assets/icons/pen-tool-1.svg");
+    width: 25px;
+    height: 25px; 
+}
+

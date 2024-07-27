@@ -1,0 +1,7 @@
+<div  class = pane>
+    <h3>Layers</h3>
+    <p-tree *ngIf="canvas.nodes.length" [style]= "{'background':'rgb(242, 242, 242)',  'padding': '0px 0px 0px 0px'}"  [value]="canvas.nodes" 
+        selectionMode="multiple" [(selection)]="canvas.selectedNodes" [metaKeySelection]="true" 
+        (onNodeSelect)="nodeSelect($event)" (onNodeUnselect)="nodeUnselect($event)"/>
+</div>
+
