@@ -2,10 +2,11 @@ import { AfterViewInit, Component, ElementRef, Input, ViewChild } from '@angular
 import {Project, Path, Rectangle, Layer, Group} from 'paper'; //'paper/dist/paper-core';
 import { UiPage } from '../ui-graphics/ui-page';
 import { DrawingTools} from '../ui-drawing-toolbar/ui-drawing-toolbar.component';
-import { isDiagonal } from '../ui-graphics/ui-utilities';
-import { GlyphNode, MarkNode, NodeType } from '../glyph-model/nodes';
+import { isDiagonal, contains } from '../ui-graphics/ui-utilities';
+import { GlyphNode, GroupNode, MarkNode, NodeType } from '../glyph-model/nodes';
 import { UiLayersComponent } from '../ui-layers/ui-layers.component';
 import { Selector } from '../ui-graphics/ui-selector';
+import { UiGroupingComponent } from '../ui-grouping/ui-grouping.component';
 
 @Component({
   selector: 'app-ui-canvas',
@@ -15,9 +16,11 @@ import { Selector } from '../ui-graphics/ui-selector';
   styleUrl: './ui-canvas.component.css'
 })
 export class UiCanvasComponent implements AfterViewInit {
-
   @Input()
   public layersPanel!: UiLayersComponent;
+
+  @Input()
+  public groupingTools!: UiGroupingComponent;
 
   @ViewChild("main_canvas") main_canvas!: ElementRef<HTMLCanvasElement>;
  
@@ -25,6 +28,8 @@ export class UiCanvasComponent implements AfterViewInit {
   drawingLayer: any; // Layer when drawing takes place
   selectionLayer: any // Layer for showing selection widgets -- not sure if i need it
   selector?: Selector;
+
+  segment: any; // segment selection with edit tool
 
   page!: UiPage; // Represented by the white page at the back
   tool!: DrawingTools;
@@ -36,6 +41,7 @@ export class UiCanvasComponent implements AfterViewInit {
 
   nodes: GlyphNode[] = [];
   selectedNodes: GlyphNode[] = [];
+  vectorSelection:  GlyphNode[] = [];
 
   ngAfterViewInit(): void {
     this.paperProject = new Project('main-canvas');
@@ -52,7 +58,7 @@ export class UiCanvasComponent implements AfterViewInit {
     this.paperProject.view.onMouseDown = (event:paper.MouseEvent) => {
       eDown = event;
 
-      if(this.tool == DrawingTools.POINTER) { // Selection mode
+      if(this.tool == DrawingTools.POINTER || this.tool == DrawingTools.SHAPE_EDIT) { // Selection mode
         this.select(event);
         this.updateSelection();
       }
@@ -63,8 +69,13 @@ export class UiCanvasComponent implements AfterViewInit {
         case DrawingTools.MOVE: 
           this.pan(eDown.point, event.point);
           break;
+        case DrawingTools.SHAPE_EDIT:
         case DrawingTools.POINTER:
-          if(this.selectedNodes.length) this.move(eDown.point, event.point);
+          if(this.segment) {
+            this.segment.point.x += event.delta.x;
+            this.segment.point.y += event.delta.y;
+          }
+          else if(this.selectedNodes.length) this.move(eDown.point, event.point);
           else {
             this.selector!.showRectSelector(eDown.point, event.point);
           }
@@ -89,7 +100,8 @@ export class UiCanvasComponent implements AfterViewInit {
     }
 
     this.paperProject.view.onMouseUp = (event:paper.MouseEvent) => {
-      if(this.tool == DrawingTools.POINTER) { 
+      if(this.tool == DrawingTools.POINTER || this.tool == DrawingTools.SHAPE_EDIT) {
+        this.segment = null; 
         if(this.selector!.rectSelector){
           this.selectRect(this.selector!.rectSelector.bounds);
           this.selector!.select();
@@ -107,14 +119,32 @@ export class UiCanvasComponent implements AfterViewInit {
     }
   }
 
-  public updateSelection(){ // To update to support multiple selection
+  public updateSelection(){
+    const editMode = this.tool == DrawingTools.SHAPE_EDIT;
+    
     if(this.selectedNodes.length > 0){
       for(let node of this.selectedNodes){
         node.data.item.pinPosition = node.data.item.position;
       }
     } 
-    this.selector!.update(this.selectedNodes);
+    if(editMode) {
+      this.selector!.update([]);
+      for(let node of this.vectorSelection){
+        node.data.item.selected= false;
+       }
+      for(let node of this.selectedNodes){
+       node.data.item.selected= true;
+      }
+      this.vectorSelection = this.selectedNodes;
+    }
+    else{
+      for(let node of this.selectedNodes){
+        node.data.item.selected= false;
+      }
+      this.selector!.update(this.selectedNodes);
+    } 
     this.layersPanel.refresh();
+    this.groupingTools.refresh();
   }
 
   private select(event:paper.MouseEvent) {
@@ -123,9 +153,10 @@ export class UiCanvasComponent implements AfterViewInit {
     }
 
     const hitOptions = {
+      segments: true,
       stroke: true,
       fill: true,
-      tolerance: 4,
+      tolerance: 5,
       match: function(hitResult:any){
         if(hitResult.item && hitResult.item.node) return true; 
         else return false;
@@ -133,8 +164,26 @@ export class UiCanvasComponent implements AfterViewInit {
     };
 
     const hitResult = this.paperProject.hitTest(event.point, hitOptions);
-    if(hitResult) this.selectedNodes = [hitResult.item.node];
-    else this.selectedNodes = [];
+
+    if(!hitResult) {
+      this.segment = null;
+      this.selectedNodes = [];
+    }
+    else {
+      if(this.tool != DrawingTools.SHAPE_EDIT || !contains(this.selectedNodes, hitResult.item.node)) this.segment = null;
+      else if(hitResult.type == "segment"){
+        this.segment = hitResult.segment;
+      }  else if(hitResult.type == 'stroke') {
+        var location = hitResult.location;
+        this.segment = hitResult.item.insert(location.index + 1, event.point);
+        //hitResult.item.smooth();
+      } else this.segment = null;
+
+      if(this.tool == DrawingTools.SHAPE_EDIT) this.selectedNodes = [hitResult.item.node];
+      else {
+        this.selectedNodes = [hitResult.item.node.getRootNode()];
+      }
+    }
   }
 
   private selectRect(rect:any) {
@@ -148,9 +197,9 @@ export class UiCanvasComponent implements AfterViewInit {
   private move(from:any, to:any){
     let offset = to.subtract(from);
     for(let node of this.selectedNodes){
-      node.data.item.position =  node.data.item.pinPosition.add(offset);
+      node.data.item.position = node.data.item.pinPosition.add(offset);
     }
-    this.selector!.update(this.selectedNodes);
+    if(this.tool == DrawingTools.POINTER) this.selector!.update(this.selectedNodes);
   }
 
   private pan(from:any, to:any){
@@ -203,11 +252,28 @@ export class UiCanvasComponent implements AfterViewInit {
       case DrawingTools.MOVE: 
         this.setCursor("move");
         break;
-      case DrawingTools.POINTER:   
+      case DrawingTools.SHAPE_EDIT:   
+        //this.selectedNodes = [];
+        this.updateSelection();
+        this.setCursor("default");
+        break;
+
+      case DrawingTools.POINTER: 
+        this.updateSelection();
         this.setCursor("default");
         break;
        default: this.setCursor("crosshair");
     }
   }
 
+  groupSelected() { // TODO: Not ready
+    const group = new Group();
+    const groupNode = new GroupNode(group);
+    groupNode.setChildren(this.selectedNodes.reverse());
+
+    this.nodes = this.nodes.filter(v => !this.selectedNodes.includes(v));
+    this.nodes.unshift(groupNode);
+    this.selectedNodes = [groupNode];
+    this.updateSelection();
+  }
 }

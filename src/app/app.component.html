@@ -1,7 +1,7 @@
 
 <div>
   <div class = "canvas">
-    <app-ui-canvas #canvas [layersPanel] = "layers"> </app-ui-canvas>
+    <app-ui-canvas #canvas [layersPanel] = "layers" [groupingTools] = "grouping"> </app-ui-canvas>
   </div>
 
   <div class="drawing-tools">
@@ -12,6 +12,8 @@
     <app-ui-layers #layers [canvas] = "canvas"> </app-ui-layers>
   </div>
 
+  <div class="grouping-tools">
+    <app-ui-grouping #grouping [canvas] = "canvas"> </app-ui-grouping>
+  </div>
+
 </div>
-
-

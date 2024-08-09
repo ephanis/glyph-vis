@@ -26,6 +26,11 @@ export class GlyphNode implements TreeNode<PaperData> {
         this.data = new PaperData(item);
         item.node = this; // Keep a reference of the node from the actual path
     }
+
+    getRootNode(): GlyphNode {
+        if(this.parent) return this.parent.getRootNode();
+        else return this; 
+    }
 }
 
 export class MarkNode extends GlyphNode {
@@ -54,5 +59,13 @@ export class GroupNode extends GlyphNode {
     addChild(node: GlyphNode){
         this.children.push(node);
         node.parent = this;
+    }
+
+    setChildren(nodes: GlyphNode[]){
+        nodes.forEach(node => {
+            node.parent = this;
+            this.data.item.addChild(node.data.item);
+        });
+        this.children = nodes;
     }
 }

@@ -8,6 +8,7 @@ import { UiCanvasComponent } from '../ui-canvas/ui-canvas.component';
 export enum DrawingTools {
   MOVE = 1,
   POINTER,
+  SHAPE_EDIT,
   RECT,
   ELLIPSE,
   LINE,
@@ -22,12 +23,14 @@ export enum DrawingTools {
   styleUrl: './ui-drawing-toolbar.component.css'
 })
 export class UiDrawingToolbarComponent implements AfterViewInit  {
+
   @Input()
   public canvas!: UiCanvasComponent;
 
   public activeTool = DrawingTools.MOVE;
   
   pointerChecked: boolean = false;
+  editShapeChecked: boolean = false;
   moveChecked: boolean = true;
   lineChecked: boolean = false;
   rectChecked: boolean = false;
@@ -43,6 +46,9 @@ export class UiDrawingToolbarComponent implements AfterViewInit  {
         break;
       case DrawingTools.POINTER:   
         this.pointerChecked = false;
+        break;
+      case DrawingTools.SHAPE_EDIT: 
+        this.editShapeChecked = false;
         break;
       case DrawingTools.RECT: 
         this.rectChecked = false;
@@ -66,6 +72,11 @@ export class UiDrawingToolbarComponent implements AfterViewInit  {
   pointerPressed() {
     this.resetTool(DrawingTools.POINTER);
     this.pointerChecked = true;
+  }
+
+  editShapePressed() {
+    this.resetTool(DrawingTools.SHAPE_EDIT);
+    this.editShapeChecked = true;
   }
 
   drawPressed() {
