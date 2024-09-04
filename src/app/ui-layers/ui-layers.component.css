@@ -4,6 +4,9 @@
      border-radius: 10px;
  }
 
+ :host ::ng-deep .p-treenode {
+    font-size:15px; 
+ }
 
 :host ::ng-deep .line-icon { 
     background-image: url("../../assets/icons/line.svg");

@@ -12,8 +12,16 @@
     <app-ui-layers #layers [canvas] = "canvas"> </app-ui-layers>
   </div>
 
-  <div class="grouping-tools">
-    <app-ui-grouping #grouping [canvas] = "canvas"> </app-ui-grouping>
+  <div class="cols">
+    <div class="grouping-tools">
+      <app-ui-grouping #grouping [canvas] = "canvas"> </app-ui-grouping>
+    </div>
+    <div class="attributes">
+      <app-ui-attributes #attributes [canvas] = "canvas"> </app-ui-attributes>
+    </div>
   </div>
+
+
+
 
 </div>

@@ -1,0 +1,33 @@
+.pane{
+    background-color: rgb(242, 242, 242);
+    margin-top: 5px;
+    padding: 3px 20px 20px 20px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+:host ::ng-deep p-inputNumber {
+    height:32px;
+    border-radius: 0px;
+    margin-left: 10px;
+}
+
+.attribute-group {
+    margin-top: 10px;
+}
+
+.attribute {
+    margin-top: 10px;
+    text-align: right;
+}
+
+:host ::ng-deep .p-dropdown {
+    width: 15rem;    
+    margin-left: 10px;
+    text-align: left;
+}
+  
+:host ::ng-deep .p-divider-content {
+    background-color: rgb(242, 242, 242);
+}
+  

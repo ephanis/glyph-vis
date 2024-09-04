@@ -26,6 +26,21 @@ p-toggleButton {
     height: 25px; 
 }
 
+:host ::ng-deep .pointer-ref-icon { 
+    background-image: url("../../assets/icons/pointer-2.svg");
+    width: 25px;
+    height: 25px; 
+}
+
+:host ::ng-deep .pointer-ref-icon-pressed { 
+    background-color: hwb(210 99% 0%);
+    -webkit-mask-image: url("../../assets/icons/pointer-2.svg");
+    mask-image: url("../../assets/icons/pointer-2.svg");
+    width: 25px;
+    height: 25px; 
+}
+
+
 :host ::ng-deep .edit-icon { 
     background-image: url("../../assets/icons/pointer-vector.svg");
     width: 25px;

@@ -7,6 +7,7 @@ import { GlyphNode, GroupNode, MarkNode, NodeType } from '../glyph-model/nodes';
 import { UiLayersComponent } from '../ui-layers/ui-layers.component';
 import { Selector } from '../ui-graphics/ui-selector';
 import { UiGroupingComponent } from '../ui-grouping/ui-grouping.component';
+import { Skeleton, SkeletonVisualizer } from '../ui-graphics/ui-skeleton';
 
 @Component({
   selector: 'app-ui-canvas',
@@ -28,6 +29,7 @@ export class UiCanvasComponent implements AfterViewInit {
   drawingLayer: any; // Layer when drawing takes place
   selectionLayer: any // Layer for showing selection widgets -- not sure if i need it
   selector?: Selector;
+  skeletonVis?: SkeletonVisualizer;
 
   segment: any; // segment selection with edit tool
 
@@ -46,11 +48,12 @@ export class UiCanvasComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     this.paperProject = new Project('main-canvas');
     this.drawingLayer = this.paperProject.activeLayer;
-    this.page = new UiPage(this.paperProject, 2000, 1000);
+    this.page = new UiPage(this.paperProject, 6000, 1000);
 
     this.selectionLayer = new Layer();
     this.selectionLayer.activate();
     this.selector = new Selector();
+    this.skeletonVis = new SkeletonVisualizer();
 
     this.drawingLayer.activate();
 
@@ -58,7 +61,8 @@ export class UiCanvasComponent implements AfterViewInit {
     this.paperProject.view.onMouseDown = (event:paper.MouseEvent) => {
       eDown = event;
 
-      if(this.tool == DrawingTools.POINTER || this.tool == DrawingTools.SHAPE_EDIT) { // Selection mode
+      if(this.tool == DrawingTools.POINTER || this.tool == DrawingTools.SHAPE_EDIT 
+        || this.tool == DrawingTools.POINTER_REF) { // Selection mode
         this.select(event);
         this.updateSelection();
       }
@@ -70,6 +74,7 @@ export class UiCanvasComponent implements AfterViewInit {
           this.pan(eDown.point, event.point);
           break;
         case DrawingTools.SHAPE_EDIT:
+        case DrawingTools.POINTER_REF:
         case DrawingTools.POINTER:
           if(this.segment) {
             this.segment.point.x += event.delta.x;
@@ -100,7 +105,8 @@ export class UiCanvasComponent implements AfterViewInit {
     }
 
     this.paperProject.view.onMouseUp = (event:paper.MouseEvent) => {
-      if(this.tool == DrawingTools.POINTER || this.tool == DrawingTools.SHAPE_EDIT) {
+      if(this.tool == DrawingTools.POINTER || this.tool == DrawingTools.POINTER_REF 
+        || this.tool == DrawingTools.SHAPE_EDIT) {
         this.segment = null; 
         if(this.selector!.rectSelector){
           this.selectRect(this.selector!.rectSelector.bounds);
@@ -120,15 +126,16 @@ export class UiCanvasComponent implements AfterViewInit {
   }
 
   public updateSelection(){
-    const editMode = this.tool == DrawingTools.SHAPE_EDIT;
+   // const editMode = this.tool == DrawingTools.SHAPE_EDIT;
     
     if(this.selectedNodes.length > 0){
       for(let node of this.selectedNodes){
         node.data.item.pinPosition = node.data.item.position;
       }
     } 
-    if(editMode) {
+    if(this.tool == DrawingTools.SHAPE_EDIT) {
       this.selector!.update([]);
+      this.skeletonVis!.update([]);
       for(let node of this.vectorSelection){
         node.data.item.selected= false;
        }
@@ -137,7 +144,15 @@ export class UiCanvasComponent implements AfterViewInit {
       }
       this.vectorSelection = this.selectedNodes;
     }
-    else{
+    else if(this.tool == DrawingTools.POINTER_REF) {
+      this.selector!.update([]);
+      for(let node of this.selectedNodes){
+        node.data.item.selected= false;
+      }
+      this.skeletonVis!.update(this.selectedNodes);
+    }
+    else {
+      this.skeletonVis!.update([]);
       for(let node of this.selectedNodes){
         node.data.item.selected= false;
       }
@@ -200,6 +215,7 @@ export class UiCanvasComponent implements AfterViewInit {
       node.data.item.position = node.data.item.pinPosition.add(offset);
     }
     if(this.tool == DrawingTools.POINTER) this.selector!.update(this.selectedNodes);
+    else if(this.tool == DrawingTools.POINTER_REF) this.skeletonVis!.refresh();
   }
 
   private pan(from:any, to:any){
@@ -253,11 +269,7 @@ export class UiCanvasComponent implements AfterViewInit {
         this.setCursor("move");
         break;
       case DrawingTools.SHAPE_EDIT:   
-        //this.selectedNodes = [];
-        this.updateSelection();
-        this.setCursor("default");
-        break;
-
+      case DrawingTools.POINTER_REF:   
       case DrawingTools.POINTER: 
         this.updateSelection();
         this.setCursor("default");

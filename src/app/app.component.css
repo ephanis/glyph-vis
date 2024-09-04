@@ -11,7 +11,7 @@
     top: 0;
     height: 100%;
     width: 100%; 
-    position: fixed;
+    position: fixed; 
 }
 
 .drawing-tools {
@@ -20,8 +20,18 @@
 }
 
 .grouping-tools {
-    width: 200px; 
+    width: 100%;
+}
+
+.attributes {
+    width: 100%;
+}
+
+.cols {
+    width:300px;
+/*    float:right;*/
     margin-top: 10px;
-    right: 10px;
+    right: 0px;
     position: fixed;
 }
+

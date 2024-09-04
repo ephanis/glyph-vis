@@ -1,0 +1,49 @@
+<div  class = pane>
+    <div class="attribute-group">
+        <div class = "type-name">
+            <p-divider><b>ORIGIN</b></p-divider>
+        </div>
+
+        <div class = "attribute">
+                <p-dropdown [options]="originPoints" [(ngModel)]="selectedOriginCode" optionLabel="name" optionValue="code"/>
+        </div>
+
+        <div class = "attribute">
+            <label for="X">X offset</label>
+            <p-inputNumber [(ngModel)]="value1" size="15" inputId="locale-user" [minFractionDigits]="1" />
+        </div>
+        <div class = "attribute">
+            <label for="Y">Y offset</label>
+            <p-inputNumber [(ngModel)]="value1" size="15" inputId="locale-user" [minFractionDigits]="1" />
+        </div>  
+    </div>
+
+    <div class="attribute-group">
+        <div class = "type-name">
+            <p-divider><b>POSITION</b></p-divider>
+        </div>
+        <div class = "attribute">
+            <label for="X">X</label>
+            <p-inputNumber [(ngModel)]="value1" size="15" inputId="locale-user" [minFractionDigits]="1" />
+        </div>
+        <div class = "attribute">
+            <label for="Y">Y</label>
+            <p-inputNumber [(ngModel)]="value1" size="15" inputId="locale-user" [minFractionDigits]="1" />
+        </div>    
+    </div>
+
+    <div class="attribute-group">
+        <div class = "type-name">
+            <p-divider><b>SIZE</b></p-divider>
+        </div>
+        <div class = "attribute">
+            <label for="Width">Width</label>
+            <p-inputNumber [(ngModel)]="value1" size="15" inputId="locale-user" [minFractionDigits]="1" />
+        </div>
+        <div class = "attribute">
+            <label for="Height">Height</label>
+            <p-inputNumber [(ngModel)]="value1" size="15" inputId="locale-user" [minFractionDigits]="1" />
+        </div>    
+    </div>
+</div>
+

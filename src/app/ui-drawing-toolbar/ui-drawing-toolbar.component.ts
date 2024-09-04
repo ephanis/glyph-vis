@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Input } from '@angular/core';
 import {ButtonModule} from 'primeng/button';
 import {TieredMenuModule } from 'primeng/tieredmenu';
 import {ToggleButtonModule} from 'primeng/togglebutton';
@@ -9,6 +9,7 @@ export enum DrawingTools {
   MOVE = 1,
   POINTER,
   SHAPE_EDIT,
+  POINTER_REF,
   RECT,
   ELLIPSE,
   LINE,
@@ -30,6 +31,7 @@ export class UiDrawingToolbarComponent implements AfterViewInit  {
   public activeTool = DrawingTools.MOVE;
   
   pointerChecked: boolean = false;
+  pointerRefChecked: boolean = false;
   editShapeChecked: boolean = false;
   moveChecked: boolean = true;
   lineChecked: boolean = false;
@@ -46,6 +48,9 @@ export class UiDrawingToolbarComponent implements AfterViewInit  {
         break;
       case DrawingTools.POINTER:   
         this.pointerChecked = false;
+        break;
+      case DrawingTools.POINTER_REF:   
+        this.pointerRefChecked = false;
         break;
       case DrawingTools.SHAPE_EDIT: 
         this.editShapeChecked = false;
@@ -72,6 +77,12 @@ export class UiDrawingToolbarComponent implements AfterViewInit  {
   pointerPressed() {
     this.resetTool(DrawingTools.POINTER);
     this.pointerChecked = true;
+  }
+
+  pointerRefPressed() {
+    // TODO:
+    this.resetTool(DrawingTools.POINTER_REF);
+    this.pointerRefChecked = true;
   }
 
   editShapePressed() {

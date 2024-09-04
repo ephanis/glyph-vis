@@ -1,22 +1,12 @@
 import { Path, Rectangle, Group } from "paper";
-import { GlyphNode } from "../glyph-model/nodes";
+import { GlyphNode, RelativePosition } from "../glyph-model/nodes";
 import { isDiagonal } from "./ui-utilities";
 
-enum Position {
-    TOP_LEFT = 0,
-    TOP_CENTER,
-    TOP_RIGHT,
-    LEFT_CENTER,
-    RIGHT_CENTER,
-    BOTTOM_LEFT,
-    BOTTOM_CENTER,
-    BOTTOM_RIGHT
-}
 
 export class Handle {
     path:any; 
 
-    constructor(public selector:Selector, public pos:Position) {
+    constructor(public selector:Selector, public pos:RelativePosition) {
         this.path = new Path.Circle({
             center: [200,200],
             radius: 4,
@@ -29,28 +19,28 @@ export class Handle {
 
     update(bounds: any) { 
         switch(this.pos){
-            case Position.TOP_LEFT:
+            case RelativePosition.TOP_LEFT:
                 this.path.position = bounds.topLeft;
                 break;
-            case Position.TOP_CENTER:
+            case RelativePosition.TOP_CENTER:
                 this.path.position = bounds.topCenter;
                 break;
-            case Position.TOP_RIGHT:
+            case RelativePosition.TOP_RIGHT:
                 this.path.position = bounds.topRight;
                 break;
-            case Position.LEFT_CENTER:
+            case RelativePosition.CENTER_LEFT:
                 this.path.position = bounds.leftCenter;
                 break;
-            case Position.RIGHT_CENTER:
+            case RelativePosition.CENTER_RIGHT:
                 this.path.position = bounds.rightCenter;
                 break;
-            case Position.BOTTOM_LEFT:
+            case RelativePosition.BOTTOM_LEFT:
                 this.path.position = bounds.bottomLeft;
                 break;
-            case Position.BOTTOM_CENTER:
+            case RelativePosition.BOTTOM_CENTER:
                 this.path.position = bounds.bottomCenter;
                 break;
-            case Position.BOTTOM_RIGHT:
+            case RelativePosition.BOTTOM_RIGHT:
                 this.path.position = bounds.bottomRight;
                 break;
             default:
@@ -105,28 +95,28 @@ export class Handle {
         let offset = to.subtract(from);
 
         switch(this.pos){
-            case Position.TOP_LEFT:        
+            case RelativePosition.TOP_LEFT:        
                 rect.topLeft = this.path.pinPosition.add(offset);
                 break;
-            case Position.TOP_CENTER:
+            case RelativePosition.TOP_CENTER:
                 rect.top = offset.y + this.path.pinPosition.y; 
                 break;
-            case Position.TOP_RIGHT:
+            case RelativePosition.TOP_RIGHT:
                 rect.topRight = this.path.pinPosition.add(offset);
                 break;
-            case Position.LEFT_CENTER:
+            case RelativePosition.CENTER_LEFT:
                 rect.left = offset.x + this.path.pinPosition.x; 
                 break;
-            case Position.RIGHT_CENTER:
+            case RelativePosition.CENTER_RIGHT:
                 rect.right = offset.x + this.path.pinPosition.x; 
                 break;
-            case Position.BOTTOM_LEFT:
+            case RelativePosition.BOTTOM_LEFT:
                 rect.bottomLeft = this.path.pinPosition.add(offset);
                 break;
-            case Position.BOTTOM_CENTER:
+            case RelativePosition.BOTTOM_CENTER:
                 rect.bottom = offset.y + this.path.pinPosition.y; 
                 break;
-            case Position.BOTTOM_RIGHT:
+            case RelativePosition.BOTTOM_RIGHT:
                 rect.bottomRight = this.path.pinPosition.add(offset);
                 break;
             default:
@@ -167,7 +157,7 @@ export class Selector {
             visible: false
         });
 
-        for(let pos = Position.TOP_LEFT; pos <= Position.BOTTOM_RIGHT; ++pos) { 
+        for(let pos = RelativePosition.TOP_LEFT; pos <= RelativePosition.BOTTOM_RIGHT; ++pos) { 
             const handle = new Handle(this, pos);
             handle.setVisible(false);
             this.handles.push(handle);
@@ -177,23 +167,23 @@ export class Selector {
     mirrorHandlesHorizontally(){
         for(var handle of this.handles){
             switch(handle.pos) {
-                case Position.TOP_LEFT:        
-                    handle.pos = Position.TOP_RIGHT;
+                case RelativePosition.TOP_LEFT:        
+                    handle.pos = RelativePosition.TOP_RIGHT;
                     break;
-                case Position.TOP_RIGHT:
-                    handle.pos = Position.TOP_LEFT;
+                case RelativePosition.TOP_RIGHT:
+                    handle.pos = RelativePosition.TOP_LEFT;
                     break;
-                case Position.LEFT_CENTER:
-                    handle.pos = Position.RIGHT_CENTER;
+                case RelativePosition.CENTER_LEFT:
+                    handle.pos = RelativePosition.CENTER_RIGHT;
                     break;
-                case Position.RIGHT_CENTER:
-                    handle.pos = Position.LEFT_CENTER;
+                case RelativePosition.CENTER_RIGHT:
+                    handle.pos = RelativePosition.CENTER_LEFT;
                     break;
-                case Position.BOTTOM_LEFT:
-                    handle.pos = Position.BOTTOM_RIGHT;
+                case RelativePosition.BOTTOM_LEFT:
+                    handle.pos = RelativePosition.BOTTOM_RIGHT;
                     break;
-                case Position.BOTTOM_RIGHT:
-                    handle.pos = Position.BOTTOM_LEFT;
+                case RelativePosition.BOTTOM_RIGHT:
+                    handle.pos = RelativePosition.BOTTOM_LEFT;
                     break;
                 default:
             }
@@ -203,23 +193,23 @@ export class Selector {
     mirrorHandlesVertically(){
         for(var handle of this.handles){
             switch(handle.pos){
-                case Position.TOP_LEFT:        
-                    handle.pos = Position.BOTTOM_LEFT;
+                case RelativePosition.TOP_LEFT:        
+                    handle.pos = RelativePosition.BOTTOM_LEFT;
                     break;
-                case Position.TOP_CENTER:
-                    handle.pos = Position.BOTTOM_CENTER;
+                case RelativePosition.TOP_CENTER:
+                    handle.pos = RelativePosition.BOTTOM_CENTER;
                     break;
-                case Position.TOP_RIGHT:
-                    handle.pos = Position.BOTTOM_RIGHT;
+                case RelativePosition.TOP_RIGHT:
+                    handle.pos = RelativePosition.BOTTOM_RIGHT;
                     break;
-                case Position.BOTTOM_LEFT:
-                    handle.pos = Position.TOP_LEFT;
+                case RelativePosition.BOTTOM_LEFT:
+                    handle.pos = RelativePosition.TOP_LEFT;
                     break;
-                case Position.BOTTOM_CENTER:
-                    handle.pos = Position.TOP_CENTER;
+                case RelativePosition.BOTTOM_CENTER:
+                    handle.pos = RelativePosition.TOP_CENTER;
                     break;
-                case Position.BOTTOM_RIGHT:
-                    handle.pos = Position.TOP_RIGHT;
+                case RelativePosition.BOTTOM_RIGHT:
+                    handle.pos = RelativePosition.TOP_RIGHT;
                     break;
                 default:
             }

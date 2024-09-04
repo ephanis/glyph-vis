@@ -1,4 +1,11 @@
 <div  class = pane>
-    <p-button class= "press-button" [disabled]="canvas.selectedNodes.length<2" label="Group" [text]="true" (onClick)="canvas.groupSelected()"/>
-    <p-button class= "press-button" disabled="true" label="Ungroup" [text]="true" />
+    <div class = "press-button">
+        <p-button 
+        [outlined]="true"  
+        badge="{{(canvas.selectedNodes.length>1) ? canvas.selectedNodes.length:'' }}"   badgeClass="p-badge-contrast" 
+        [disabled]="canvas.selectedNodes.length<2" label="Group" (onClick)="canvas.groupSelected()"/>
+    </div>
+    <div class = "press-button">
+        <p-button class= "press-button"  [outlined]="true" disabled="true" label="Ungroup"/>
+    </div>
 </div>
